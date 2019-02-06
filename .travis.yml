@@ -1,4 +1,4 @@
-secure: sudo: true
+sudo: true
 language: python
 python:
   - "3.6"
