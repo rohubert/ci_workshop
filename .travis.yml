@@ -1,1 +1,38 @@
-secure: 5xJh1FcmwIkC+0SKpvRgfWLBBHh03BIQ13tkF9fsptuIYzl3yq9q0FmzhWRLS8eyE4wKWbTbyb6pxX5m5VFxzX9+JrgUHmHg8Bs84+IqbWXxqRVVuk1Vkn1H9o3zBdIwhtCD52IEwcKj/FcK/jcGbWG7+ORUUMmansstl82CK7ILkbQU5Zo1dov+F0a/bcXDQpzWpT4+8OmgMRUIeJ87iKUnz/5p1bI4HSOqFk1T41PANJvD/pKGQQUr0JFIeEIAUGEnRY0TpfD+lSkDb1Hv/7IAelybHLSOQn/YC+WmNhFCAuWRI13VFaXw7uwtD5Qy5/5W8+tc6w9T7LJ1W8eQ8CbOJV/k7inSjal7rVnz8N70UOmyPaxb5L+RWOPOzMeihEJP+i2DKkZ5LKjcIWLX6P4TwA6SbmKRcpxJChOVszN+Lu6Xkf/xeD72yF8dwoUJ3I9+cS1si4BFnhHhqrJ3saYe72bBQhixBjH3VKdlk4aok2RmFPi8hBaLjcVPq2pQrs9DfpPFtXyGApGC6Hf6rnvI92GCZ7NYEmyN1HfgYK4UDS5YHN4zb/4YVul+tREa6WtfaUPAU6UW9tn64vqUDT5TX/26ovnLkLYFrXFO0FmFkBtmZxHvd5Or6rLGcXaDe95598gfrTCzPoIgP9VYQ7ZxJZmMunklEdxeFgjDv9g=
+secure: sudo: true
+language: python
+python:
+  - "3.6"
+  - "nightly"
+
+env:
+  - MOZ_HEADLESS=1
+
+addons:
+  firefox: latest
+
+install:
+  - pip install -r requirements/dev.txt
+
+before_install:
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
+  - mkdir geckodriver
+  - tar -xzf geckodriver-v0.24.0-linux64.tar.gz -C geckodriver
+  - sudo chmod +x $PWD/geckodriver/geckodriver
+  - export PATH=$PATH:$PWD/geckodriver
+
+script:
+  - nosetests --with-cov --cov-config .coveragerc
+
+after_success:
+  - codecov
+jobs:
+  include:
+    - stage: Deploy
+      script: skip
+      deploy:
+        provider: heroku
+        api_key:
+          secure: 5xJh1FcmwIkC+0SKpvRgfWLBBHh03BIQ13tkF9fsptuIYzl3yq9q0FmzhWRLS8eyE4wKWbTbyb6pxX5m5VFxzX9+JrgUHmHg8Bs84+IqbWXxqRVVuk1Vkn1H9o3zBdIwhtCD52IEwcKj/FcK/jcGbWG7+ORUUMmansstl82CK7ILkbQU5Zo1dov+F0a/bcXDQpzWpT4+8OmgMRUIeJ87iKUnz/5p1bI4HSOqFk1T41PANJvD/pKGQQUr0JFIeEIAUGEnRY0TpfD+lSkDb1Hv/7IAelybHLSOQn/YC+WmNhFCAuWRI13VFaXw7uwtD5Qy5/5W8+tc6w9T7LJ1W8eQ8CbOJV/k7inSjal7rVnz8N70UOmyPaxb5L+RWOPOzMeihEJP+i2DKkZ5LKjcIWLX6P4TwA6SbmKRcpxJChOVszN+Lu6Xkf/xeD72yF8dwoUJ3I9+cS1si4BFnhHhqrJ3saYe72bBQhixBjH3VKdlk4aok2RmFPi8hBaLjcVPq2pQrs9DfpPFtXyGApGC6Hf6rnvI92GCZ7NYEmyN1HfgYK4UDS5YHN4zb/4YVul+tREa6WtfaUPAU6UW9tn64vqUDT5TX/26ovnLkLYFrXFO0FmFkBtmZxHvd5Or6rLGcXaDe95598gfrTCzPoIgP9VYQ7ZxJZmMunklEdxeFgjDv9g=
+        app: ci_workshop
+        on:
+          repo: rohubert/ci_workshop
