@@ -1,0 +1,17 @@
+{
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+
+  ],
+  "description": "",
+  "env": {
+  },
+  "formation": {
+  },
+  "name": "ci_workshop",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
